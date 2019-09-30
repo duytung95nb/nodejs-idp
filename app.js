@@ -11,21 +11,25 @@ const passport = require('passport');
 app.set('view engine', 'ejs');
 
 app.use(cookieSession({
-    maxAge: 24*60*60*1000, // 1 day
+    maxAge: 24 * 60 * 60 * 1000, // 1 day
     keys: [keys.session.cookieKey]
 }))
 // initialize passport
 app.use(passport.initialize());
 app.use(passport.session());
 // connect to mongodb
-mongoose.connect(keys.mongoDb.dbUri, () => {
-    console.log('Connected to mongodb');
+mongoose.connect(keys.mongoDb.dbUri, (err, db) => {
+    if(err) {
+        console.log('Sorry, there is no mongo db server running.');
+    } else {
+        console.log('Connected to mongodb');
+    }
 });
 // setup routes
 app.use('/auth', authRoutes);
 app.use('/profile', profileRoutes);
 app.get('/', (req, res) => {
-    res.render('home');
+    res.render('home', {user: req.user});
 });
 const port = 3000;
 app.listen(port, () => {

@@ -4,7 +4,8 @@
   "description": "this is the first idp I built",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "debug": "node --nolazy --inspect-brk=3000 app.js"
   },
   "author": "tungdao",
   "license": "ISC",

@@ -20,10 +20,9 @@ passport.use(
         callbackURL: '/auth/google/redirect',
         clientID: keys.google.clientID,
         clientSecret: keys.google.clientSecret,
-
     }, (accessToken, refreshToken, profile, done) => {
         // passport callback func
-        console.log('passport callback function fired');
+        console.log('profile', profile);
         User.findOne({googleId: profile.id})
             .then((currentUser) => {
                 if(currentUser) {
@@ -35,11 +34,12 @@ passport.use(
                     // if not, create new user
                     new User({
                         username: profile.displayName,
-                        googleId: profile.id
+                        googleId: profile.id,
+                        thumbnailUrl: profile._json.picture
                     }).save()
                     .then((newUser) => {
                         console.log('new created user: ', newUser);
-                        done(null, currentUser)
+                        done(null, newUser)
                     });
                 }
             });
