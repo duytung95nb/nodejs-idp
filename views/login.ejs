@@ -69,8 +69,27 @@
         <h1>Login using...</h1>
     </header>
     <main>
-        <a class="google-btn" href="/auth/google">Google+</a>
+        <a class="google-btn" href="#" onclick="onGoogleLoginClicked()">Google+</a>
     </main>
 </body>
-
+    <script>
+        var googleLoginWindow;
+        var checkLoggedInInterval;
+        function onGoogleLoginClicked() {
+            if(googleLoginWindow === undefined) {
+                googleLoginWindow = window.open('http://localhost:3000/auth/google', '_blank', 'location=no,menubar=no,resizable=no,toolbar=no,status=no,titlebar=no');
+            }
+            else {
+                googleLoginWindow.focus();
+            }
+            if(!isNaN(checkLoggedInInterval)) {
+                clearInterval(checkLoggedInInterval);
+            }
+            checkLoggedInInterval = setInterval(() => {
+                if(googleLoginWindow.closed) {
+                    window.location.reload();
+                }
+            }, 1000);
+        }
+    </script>
 </html>

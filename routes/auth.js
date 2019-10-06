@@ -12,11 +12,15 @@ router.get('/logout', (req, res) => {
 });
 
 router.get('/google', passport.authenticate('google', {
-    scope: ['profile'] 
+    scope: ['profile']
 }));
 
-router.get('/google/redirect', passport.authenticate('google'), (req, res) => {
-    // res.send(req.user);
-    res.redirect('/profile');
+router.get('/google/redirect', passport.authenticate('google', { failureRedirect: 'auth/google' }),
+    (req, res) => {
+    res.redirect('/auth/success');
 });
+
+router.get('/success', (req, res) => {
+    res.render('authSuccess', {message: 'AuthSuccess'});
+})
 module.exports = router;
