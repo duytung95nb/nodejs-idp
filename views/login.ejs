@@ -72,6 +72,15 @@
         <a class="google-btn" href="#" onclick="onGoogleLoginClicked()">Google+</a>
     </main>
 </body>
+    <!-- Should redirect with auth code later -->
+    <% if(user) {%>
+    <script>
+        var clientRedirectUri = "<%- clientRedirectUri %>";
+        if(clientRedirectUri.length > 0) {
+            window.location.replace(clientRedirectUri);
+        }
+    </script>
+    <% } %>
     <script>
         var googleLoginWindow;
         var checkLoggedInInterval;
