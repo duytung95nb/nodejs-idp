@@ -76,8 +76,9 @@
     <% if(user) {%>
     <script>
         var clientRedirectUri = "<%- clientRedirectUri %>";
-        if(clientRedirectUri.length > 0) {
-            window.location.replace(clientRedirectUri);
+        var accessToken = "<%- accessToken %>";
+        if(clientRedirectUri.length > 0 && accessToken.length > 0) {
+            window.location.replace(clientRedirectUri + '#?access_token=' + accessToken);
         }
     </script>
     <% } %>
