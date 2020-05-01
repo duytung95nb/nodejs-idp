@@ -1,7 +1,8 @@
 const express = require('express');
 const app = express();
-const authRoutes = require('./routes/auth');
-const profileRoutes = require('./routes/profile');
+const authPageRoutes = require('./routes/auth.page');
+const profilePageRoutes = require('./routes/profile.page');
+const apiRoutes = require('./routes/api/_api');
 const passportSetup = require('./config/passport-setup');
 const mongoose = require('mongoose');
 const keys = require('./config/keys');
@@ -26,8 +27,9 @@ mongoose.connect(keys.mongoDb.dbUri, (err, db) => {
     }
 });
 // setup routes
-app.use('/auth', authRoutes);
-app.use('/profile', profileRoutes);
+app.use('/auth', authPageRoutes);
+app.use('/profile', profilePageRoutes);
+app.use('/api', apiRoutes);
 app.get('/', (req, res) => {
     res.render('home', {user: req.user});
 });
