@@ -1,10 +1,11 @@
 const router = require('express').Router();
 const passport = require('passport');
-const clients = require('../config/clients');
+const clients = require('../../app.config/clients');
 const jwt = require('jsonwebtoken');
+const keys = require('../../app.config/keys');
 
 router.get('/login', (req, res) => {
-    var requestingClient = clients.find(client => client.clientID === req.query.client_id);
+    var requestingClient = clients.find(client => client.id === req.query.client_id);
     if (requestingClient === undefined) {
         res.status(401).send('Unauthorized client');
     }
@@ -13,7 +14,7 @@ router.get('/login', (req, res) => {
             sub: req.user.id,
             img: req.user.thumbnailUrl,
             fullName: req.user.username
-        }, 'This is private key', { expiresIn: 3600 });
+        }, keys.auth.tokenPrivateKey, { expiresIn: 3600 });
         
         res.render('login', {user: req.user,
             accessToken: token,

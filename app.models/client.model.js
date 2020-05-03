@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const clientSchema = new Schema({
     clientID: String,
+    origin: String,
     redirectUri: String,
     grantType: Array,
     postLogoutRedirectUri: String,
