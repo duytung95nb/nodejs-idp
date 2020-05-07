@@ -20,8 +20,9 @@ authRouter.route('/login').post((req, res) => {
         .send(`Welcome ${req.body.username}`);
 });
 
-authRouter.route('/register').post((req, res) => {
-    // var origin = req.get('origin');
+authRouter.route('/register').post(
+    validateCreatingUserModel,
+    (req, res) => {
     const reqBody = req.body;
     UserModel.findOne({ username: reqBody.username },
         (err, userFromDatabase) => {
@@ -50,4 +51,27 @@ authRouter.route('/register').post((req, res) => {
                 .send(`User with ${reqBody.username} already existed`);
         });
 });
+
+function validateCreatingUserModel(req, res, next) {
+    const reqBody = req.body;
+    const trimmedUsername = reqBody.username.trim();
+    const validUsername = trimmedUsername.match(/^[a-zA-Z\-]+$/);
+    if(validUsername == null) {
+        res.status(400)
+            .send(`Username ${trimmedUsername} is invalid`);
+        return;
+    }
+    const trimmedPassword = reqBody.password.trim();
+    const validPassword = trimmedPassword.match(/^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9]{8,}$/);
+    // should contain at least one lower case
+    // should contain at least one upper case
+    // should contain at least 8 from the mentioned characters
+    if(validPassword == null) {
+        res.status(400)
+            .send(`Password ${trimmedPassword} is invalid`);
+        return;
+    }
+    next();
+}
+
 module.exports = authRouter;
