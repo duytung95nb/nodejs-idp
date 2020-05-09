@@ -23,40 +23,40 @@ authRouter.route('/login').post((req, res) => {
 authRouter.route('/register').post(
     validateCreatingUserModel,
     (req, res) => {
-    const reqBody = req.body;
-    UserModel.findOne({ username: reqBody.username },
-        (err, userFromDatabase) => {
-            if (err) {
-                res.status(500).send(err);
-                return;
-            }
-            if (!userFromDatabase) {
-                // Validate user model & create user
-                UserModel.create({
-                    username: reqBody.username,
-                    password: reqBody.password,
-                }).then(u => {
-                    let createdUser = Object.assign({},
-                        {id: u._doc._id, username: u._doc.username });
-                    res.status(201)
-                        .json(createdUser);
-                }).catch(error => {
-                    res.status(500)
-                        .send(`Created user with ${reqBody.username} failed`
-                            + error.toString());
-                });
-                return;
-            }
-            res.status(409)
-                .send(`User with ${reqBody.username} already existed`);
-        });
-});
+        const reqBody = req.body;
+        UserModel.findOne({ username: reqBody.username },
+            (err, userFromDatabase) => {
+                if (err) {
+                    res.status(500).send(err);
+                    return;
+                }
+                if (!userFromDatabase) {
+                    // Validate user model & create user
+                    UserModel.create({
+                        username: reqBody.username,
+                        password: reqBody.password,
+                    }).then(u => {
+                        let createdUser = Object.assign({},
+                            { id: u._doc._id, username: u._doc.username });
+                        res.status(201)
+                            .json(createdUser);
+                    }).catch(error => {
+                        res.status(500)
+                            .send(`Created user with ${reqBody.username} failed`
+                                + error.toString());
+                    });
+                    return;
+                }
+                res.status(409)
+                    .send(`User with ${reqBody.username} already existed`);
+            });
+    });
 
 function validateCreatingUserModel(req, res, next) {
     const reqBody = req.body;
     const trimmedUsername = reqBody.username.trim();
     const validUsername = trimmedUsername.match(/^[a-zA-Z\-]+$/);
-    if(validUsername == null) {
+    if (validUsername == null) {
         res.status(400)
             .send(`Username ${trimmedUsername} is invalid`);
         return;
@@ -66,10 +66,16 @@ function validateCreatingUserModel(req, res, next) {
     // should contain at least one lower case
     // should contain at least one upper case
     // should contain at least 8 from the mentioned characters
-    if(validPassword == null) {
+    if (validPassword == null) {
         res.status(400)
             .send(`Password ${trimmedPassword} is invalid`);
         return;
+    }
+
+    if (trimmedUsername.length < 8
+        || trimmedPassword.length < 8) {
+        res.status(400)
+            .send(`Username and password should be more than 8 characters`);
     }
     next();
 }
