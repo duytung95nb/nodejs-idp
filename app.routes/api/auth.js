@@ -8,7 +8,7 @@ const validateTokenMiddleware = require('./middlewares/auth.middleware');
 authRouter.route('/auth')
     .get(validateTokenMiddleware,
         function (req, res) {
-        UserModel.findOne({ id: req.decodedUserData.id },
+        UserModel.findOne({ id: req.customizedRequestProp.decodedUserData.sub },
             (err, userFromDatabase) => {
                 if(err) {
                     return res.status(404)
