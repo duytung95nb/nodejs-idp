@@ -19,15 +19,27 @@ authRouter.route('/auth')
     });
 
 authRouter.route('/login').post((req, res) => {
-    var origin = req.get('origin');
-    const requestingClient = clients.find(client => client.id === req.query.client_id);
-    if (requestingClient.origin !== origin) {
-        res.status(401)
-            .send('Client app origin is unauthorized');
-        return;
-    }
-    res.status(200)
-        .send(`Welcome ${req.body.username}`);
+    // Find by username and return token
+    const reqBody = req.body;
+    UserModel.findOne({
+        username: reqBody.username
+    }, (err, resultUser) => {
+        if (err) {
+            return res.status(500).send(err);;
+        }
+        if(!resultUser) {
+            return res.status(404).send(`User ${reqBody.username} does not exist`);
+        }
+        
+        const token = jwt.sign({
+            sub: resultUser.id,
+            img: resultUser.thumbnailUrl,
+            fullName: resultUser.username
+        }, keys.auth.tokenPrivateKey, { expiresIn: 3600 });
+        
+        return res.status(200)
+            .json({accessToken: token});
+    });
 });
 
 authRouter.route('/register').post(

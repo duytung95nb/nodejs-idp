@@ -10,7 +10,7 @@ module.exports = [
     },
     {
         id: 'template_app',
-        origin: 'http://localhost:4300', 
+        origin: 'http://localhost:8100', 
         grantType: [],
         redirectUri: null,
         postLogoutRedirectUri: null,
